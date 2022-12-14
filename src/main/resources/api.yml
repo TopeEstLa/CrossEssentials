@@ -1,0 +1,3 @@
+hostname: localhost
+port: 80
+timeout: 1000

@@ -1,0 +1,5 @@
+name: CrossEssentials
+version: '${version}'
+main: fr.crossessentials.crossessentials.CrossEssentials
+api-version: 1.19
+authors: [ ardidex, TopeEstLa ]
