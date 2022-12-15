@@ -9,16 +9,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CrossEssentials extends JavaPlugin implements EssentialsPlugin {
 
-    UserManager userManager;
+    private UserManager userManager;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        userManager = new UserManager(this);
+        this.userManager = new UserManager(this);
 
         // data
-        WebHelper.init(this);
-        BrokerHelper.init(this);
+        WebHelper.init();
+        BrokerHelper.init();
 
         // listeners & commands
         Bukkit.getPluginManager().registerEvents(new LoginListener(this), this);
@@ -29,6 +29,7 @@ public final class CrossEssentials extends JavaPlugin implements EssentialsPlugi
         // Plugin shutdown logic
         if (userManager != null)
             userManager.shutdown();
+
         BrokerHelper.shutdown();
     }
 
