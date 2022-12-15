@@ -84,10 +84,6 @@ public class JsonObject {
         return object;
     }
 
-    public String toString() {
-        return "JsonObject{" + this.map + '}';
-    }
-
     public static JsonObject empty(){
         return new JsonObject();
     }
@@ -97,8 +93,8 @@ public class JsonObject {
         return of(objectMapper.convertValue(str, Map.class));
     }
 
-    public static String toString(JsonObject object) {
+    public String toString() {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.convertValue(object.map, String.class);
+        return objectMapper.convertValue(this.map, String.class);
     }
 }

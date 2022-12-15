@@ -62,16 +62,16 @@ public class Bundle {
     }
 
     public void setType(String s){
-        data.add("$type", new JsonPrimitive(s));
+        data.write("$type", s);
     }
 
     public void setSender(String s){
-        data.add("$sender", new JsonPrimitive(s));
+        data.write("$sender", s);
     }
 
     public String getSender(){
-        if(!data.has("$sender"))return null;
-        return data.getAsJsonPrimitive("$sender").getAsString();
+        if(!data.contains("$sender"))return null;
+        return data.readString("§sender");
     }
 
 
