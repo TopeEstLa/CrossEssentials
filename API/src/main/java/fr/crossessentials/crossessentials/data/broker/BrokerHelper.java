@@ -7,6 +7,7 @@ import fr.crossessentials.crossessentials.data.exceptions.ConnectionException;
 public class BrokerHelper {
 
     static MessageBroker broker;
+
     public static boolean init(){
         broker = new RedisBroker();
 

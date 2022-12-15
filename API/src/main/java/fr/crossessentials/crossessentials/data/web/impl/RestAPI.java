@@ -42,7 +42,7 @@ public class RestAPI implements WebAPI {
 
             try {
 
-                response.accept(new WebResponse(connection.getResponseCode(),connection.getResponseMessage()));
+                response.accept(new WebResponse(connection.getResponseCode(), Optional.ofNullable(connection.getResponseMessage())));
             } catch (Exception e) {
                 response.accept(new WebResponse(connection.getResponseCode(), Optional.empty()));
             }
