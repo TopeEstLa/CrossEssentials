@@ -1,14 +1,12 @@
 package fr.crossessentials.crossessentials.data;
 
 import com.google.gson.*;
-import fr.crossessentials.crossessentials.exceptions.BundleDeserializeException;
+import fr.crossessentials.crossessentials.data.exceptions.BundleDeserializeException;
+import fr.crossessentials.crossessentials.json.JsonObject;
 
-import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class Bundle {
 
@@ -29,21 +27,17 @@ public class Bundle {
     }
 
     public void setRecipients(String... recipients){
-        JsonArray jsonArray = new JsonArray();
-        for (String recipient : recipients) {
-            jsonArray.add(new JsonPrimitive(recipient));
-        }
-        data.add("$recipients", jsonArray);
+        data.write("$recipients", Arrays.asList(recipients));
     }
 
     public Bundle addRecipients(String... recipients){
-        JsonArray recipientsArray = data.getAsJsonArray("$recipients");
+        List<String> recipientsArray = data.readStringList("$recipients");
         if(recipientsArray == null){
-            recipientsArray = new JsonArray();
-            data.add("$recipients",recipientsArray);
+            recipientsArray = new ArrayList<>();
+            data.write("$recipients",recipientsArray);
         }
         for (String s : recipients) {
-            recipientsArray.add(new JsonPrimitive(s));
+            recipientsArray.add(s);
         }
         return this;
     }
@@ -75,7 +69,6 @@ public class Bundle {
         data.add("$sender", new JsonPrimitive(s));
     }
 
-    @Nullable
     public String getSender(){
         if(!data.has("$sender"))return null;
         return data.getAsJsonPrimitive("$sender").getAsString();
@@ -96,8 +89,6 @@ public class Bundle {
         return strings;
     }
 
-
-    @Nullable
     public String getType(){
         if(!data.has("$type"))return null;
         return data.getAsJsonPrimitive("$type").getAsString();

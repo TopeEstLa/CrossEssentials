@@ -1,6 +1,6 @@
 package fr.crossessentials.crossessentials.data;
 
-import fr.crossessentials.crossessentials.exceptions.ConnectionException;
+import fr.crossessentials.crossessentials.data.exceptions.ConnectionException;
 
 public interface IConnector {
 

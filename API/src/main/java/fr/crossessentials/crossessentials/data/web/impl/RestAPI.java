@@ -1,9 +1,7 @@
 package fr.crossessentials.crossessentials.data.web.impl;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import fr.crossessentials.crossessentials.data.web.WebResponse;
 import fr.crossessentials.crossessentials.data.web.WebAPI;
+import fr.crossessentials.crossessentials.data.web.WebResponse;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedWriter;

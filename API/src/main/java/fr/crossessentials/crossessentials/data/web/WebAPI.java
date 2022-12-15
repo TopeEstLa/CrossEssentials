@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 public interface WebAPI {
 
-    void makeRequest(String endpoint, String method, @Nullable JsonObject body, Consumer<WebResponse> response);
+    void makeRequest(String endpoint, String method,  JsonObject body, Consumer<WebResponse> response);
 
 
 }

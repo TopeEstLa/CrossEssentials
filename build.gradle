@@ -20,7 +20,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly group: 'redis.clients', name: 'jedis', version: '4.2.3'
+        implementation 'io.lettuce:lettuce-core:6.2.1.RELEASE'
         compileOnly group: 'com.zaxxer', name: 'HikariCP', version: '5.0.1'
         compileOnly group: 'com.rabbitmq', name: 'amqp-client', version: '5.16.0'
 

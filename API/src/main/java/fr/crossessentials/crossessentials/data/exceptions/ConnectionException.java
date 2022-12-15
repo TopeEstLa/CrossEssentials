@@ -1,4 +1,4 @@
-package fr.crossessentials.crossessentials.exceptions;
+package fr.crossessentials.crossessentials.data.exceptions;
 
 /**
  * @author TopeEstLa
