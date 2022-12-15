@@ -1,39 +1,91 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'maven-publish'
 }
 
-group ''
+group 'io.rivrs'
 version 'PREBUILD-0.0.0'
-compileJava.options.encoding = 'UTF-8'
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
+allprojects {
+    apply plugin: 'java'
+
+    compileJava.options.encoding = 'UTF-8'
+    java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+
+    }
+
+    dependencies {
+        compileOnly group: 'redis.clients', name: 'jedis', version: '4.2.3'
+        compileOnly group: 'com.zaxxer', name: 'HikariCP', version: '5.0.1'
+        compileOnly group: 'com.rabbitmq', name: 'amqp-client', version: '5.16.0'
+
+        compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.4'
+        compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
+        compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.4'
+
+        compileOnly group: 'commons-lang', name: 'commons-lang', version: '2.6'
+        compileOnly group: 'org.xerial.snappy', name: 'snappy-java', version: '1.1.8.4'
+    }
+}
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'papermc-repo'
-        url = 'https://repo.papermc.io/repository/maven-public/'
-    }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
-    }
+    mavenLocal()
+
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT'
+    implementation project(":API")
 
-    implementation 'io.lettuce:lettuce-core:6.2.1.RELEASE' // redis
-    compileOnly group: 'com.zaxxer', name: 'HikariCP', version: '5.0.1'
-    compileOnly group: 'com.rabbitmq', name: 'amqp-client', version: '5.16.0'
+    compileOnly group: 'io.papermc.paper', name: 'paper-api', version: '1.19.2-R0.1-SNAPSHOT'
 
-    compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.4'
-    compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
-    compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.4'
+    compileOnly group: 'net.kyori', name: 'adventure-api', version: '4.11.0'
+    compileOnly group: 'net.kyori', name: 'adventure-platform-bukkit', version: '4.1.2'
+    compileOnly group: 'net.kyori', name: 'adventure-platform-bungeecord', version: '4.1.2'
+    compileOnly group: 'net.kyori', name: 'adventure-text-minimessage', version: '4.11.0'
 
-    compileOnly group: 'commons-lang', name: 'commons-lang', version: '2.6'
-    compileOnly group: 'org.xerial.snappy', name: 'snappy-java', version: '1.1.8.4'
 }
 
+subprojects {
+    shadowJar {
+        archiveFileName = "${project.name}.jar"
+        destinationDirectory = file("../archive/")
+    }
+}
+
+shadowJar {
+    dependsOn(jar)
+
+    delete fileTree('./target/') {
+        exclude archiveName
+    }
+
+    destinationDir = file("./target/")
+
+    from sourceSets.getByName("main").output
+}
+
+jar {
+    from {
+        for (File file : new File("archive").listFiles()) {
+            zipTree(file)
+        }
+    }
+}
+
+clean {
+    delete file('./archive/')
+}
+
+build {
+    dependsOn shadowJar
+    dependsOn clean
+}
 
 processResources {
     eachFile { details ->
@@ -44,3 +96,7 @@ processResources {
         }
     }
 }
+
+shadowJar.shouldRunAfter build
+build.shouldRunAfter subprojects.build
+publish.shouldRunAfter shadowJar
