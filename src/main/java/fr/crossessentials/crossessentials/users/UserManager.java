@@ -45,6 +45,11 @@ public class UserManager {
     public CompletableFuture<Optional<User>> fetchUser(UUID uuid, boolean ignoreCache){
         CompletableFuture<Optional<User>> future = new CompletableFuture<>();
 
+        if(!ignoreCache){
+            User user = loadedUsers.get(uuid);
+            if(user != null)
+                future.complete(Optional.of(user));
+        }
         BukkitExecutor.async(() -> future.complete(WebHelper.fetchUser(uuid)));
         return future;
     }

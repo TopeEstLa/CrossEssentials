@@ -1,6 +1,5 @@
 package fr.crossessentials.crossessentials.data;
 
-import com.google.gson.*;
 import fr.crossessentials.crossessentials.data.exceptions.BundleDeserializeException;
 import fr.crossessentials.crossessentials.json.JsonObject;
 
@@ -36,28 +35,19 @@ public class Bundle {
             recipientsArray = new ArrayList<>();
             data.write("$recipients",recipientsArray);
         }
-        for (String s : recipients) {
-            recipientsArray.add(s);
-        }
+        recipientsArray.addAll(Arrays.asList(recipients));
         return this;
     }
 
     public Bundle removeRecipients(String... recipients){
-        JsonArray recipientsArray = data.getAsJsonArray("$recipients");
+        List<String> recipientsArray = data.readStringList("$recipients");
         if(recipientsArray == null)return this;
-        JsonArray newArray = new JsonArray();
-        for (JsonElement jsonElement : recipientsArray) {
-            if (Arrays.stream(recipients).anyMatch(a -> a.equals(jsonElement.getAsJsonPrimitive().getAsString()))) {
-                continue;
-            }
-            newArray.add(jsonElement);
-        }
-        if(newArray.size() == 0){
-            data.remove("$recipients");
+        recipientsArray.removeAll(List.of(recipients));
+        if(recipientsArray.size() == 0){
+            data.write("$recipients", null);
             return this;
         }
 
-        data.add("$recipients",newArray);
         return this;
     }
 
@@ -76,22 +66,13 @@ public class Bundle {
 
 
 
-    public String[] getRecipients(){
-        if(!data.has("$recipients"))return new String[]{};
-        JsonArray recipients = data.getAsJsonArray("$recipients");
-        String[] strings = new String[recipients.size()];
-        int index = -1;
-        for (JsonElement $recipients : recipients) {
-            index++;
-            strings[index] = $recipients.getAsString();
-        }
-
-        return strings;
+    public List<String> getRecipients(){
+        return data.readStringList("$recipients");
     }
 
     public String getType(){
-        if(!data.has("$type"))return null;
-        return data.getAsJsonPrimitive("$type").getAsString();
+        if(!data.contains("$type"))return null;
+        return data.read("$type", String.class);
     }
 
     public String getChannel() {
@@ -111,99 +92,98 @@ public class Bundle {
     }
 
     public Optional<UUID> getUUID(String key){
-        if(!data.has(key))return Optional.empty();
+        if(!data.contains(key))return Optional.empty();
         try{
-            return Optional.of(UUID.fromString(data.getAsJsonPrimitive(key).getAsString()));
+            return Optional.of(UUID.fromString(data.readString(key)));
         }catch (Exception e){
             return Optional.empty();
         }
     }
 
     public void setUUID(String key, UUID value){
-        data.add(key, new JsonPrimitive(value.toString()));
+        data.write(key, value.toString());
     }
 
     public Optional<String> getString(String key){
-        if(!data.has(key))return Optional.empty();
+        if(!data.contains(key))return Optional.empty();
         try{
-            return Optional.of(data.getAsJsonPrimitive(key).getAsString());
+            return Optional.of(data.readString(key));
         }catch (Exception e){
             return Optional.empty();
         }
     }
 
     public void setString(String key, String value){
-        data.add(key, new JsonPrimitive(value));
+        data.write(key, value);
     }
 
     public Optional<Boolean> getBoolean(String key){
-        if(!data.has(key))return Optional.empty();
-        return Optional.of(data.getAsJsonPrimitive(key).getAsBoolean());
+        if(!data.contains(key))return Optional.empty();
+        return Optional.of(data.readBoolean(key));
     }
 
     public void setBoolean(String key, boolean value){
-        data.add(key, new JsonPrimitive(value));
+        data.write(key, value);
     }
 
     public Optional<Integer> getInteger(String key){
-        if(!data.has(key))return Optional.empty();
-        return Optional.of(data.getAsJsonPrimitive(key).getAsInt());
+        if(!data.contains(key))return Optional.empty();
+        return Optional.of(data.readInt(key));
     }
 
     public void setInteger(String key, int value){
-        data.add(key, new JsonPrimitive(value));
+        data.write(key, value);
     }
 
     public Optional<Long> getLong(String key){
-        if(!data.has(key))return Optional.empty();
-        return Optional.of(data.getAsJsonPrimitive(key).getAsLong());
+        if(!data.contains(key))return Optional.empty();
+        return Optional.of(data.read(key, Long.class));
     }
 
     public void setLong(String key, long value){
-        data.add(key, new JsonPrimitive(value));
+        data.write(key, value);
     }
 
     public Optional<BigInteger> getBigInteger(String key){
-        if(!data.has(key))return Optional.empty();
-        return Optional.of(data.getAsJsonPrimitive(key).getAsBigInteger());
+        if(!data.contains(key))return Optional.empty();
+        return Optional.of(data.read(key, BigInteger.class));
     }
 
     public void setBigInteger(String key, BigInteger value){
-        data.add(key, new JsonPrimitive(value));
+        data.write(key, value);
     }
 
     public Optional<BigDecimal> getBigDecimal(String key){
-        if(!data.has(key))return Optional.empty();
-        return Optional.of(data.getAsJsonPrimitive(key).getAsBigDecimal());
+        if(!data.contains(key))return Optional.empty();
+        return Optional.of(data.read(key, BigDecimal.class));
     }
 
     public void setBigDecimal(String key, BigDecimal value){
-        data.add(key, new JsonPrimitive(value));
+        data.write(key, value);
     }
 
-    public Optional<JsonArray> getList(String key){
-        if(!data.has(key))return Optional.empty();
-        return Optional.of(data.getAsJsonArray(key));
+    public Optional<List<String>> getList(String key){
+        if(!data.contains(key))return Optional.empty();
+        return Optional.of(data.readStringList(key));
     }
 
-    public void setList(String key, JsonArray array){
-        data.add(key,array);
+    public void setList(String key, List<String> list){
+        data.write(key, list);
     }
 
     public String serialize(){
         JsonObject root = new JsonObject();
-        root.add("channel",new JsonPrimitive(channel));
-        root.add("data",data);
+        root.write("channel", channel);
+        root.write("data",data);
         return root.toString();
     }
 
     public static Bundle deserialize(String s) throws BundleDeserializeException {
-        if(!(JsonParser.parseString(s) instanceof JsonObject object))
-            throw new BundleDeserializeException("The received string is not/invalid json \n"+s+"\n"+ JsonParser.parseString(s));
+        JsonObject object = JsonObject.fromString(s);
 
-        if(!object.has("channel") || !object.has("data"))
+        if(!object.contains("channel") || !object.contains("data"))
             throw new BundleDeserializeException("Missing data or channel field");
 
-        return new Bundle(object.get("channel").getAsString(), object.get("data").getAsJsonObject());
+        return new Bundle(object.readString("channel"), object.read("data", JsonObject.class));
     }
 }
