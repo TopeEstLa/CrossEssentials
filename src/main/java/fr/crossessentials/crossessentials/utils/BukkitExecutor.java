@@ -5,13 +5,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class BukkitExecutor {
 
+    private static CrossEssentials plugin;
+
+    public static void init(CrossEssentials plugin){
+
+        BukkitExecutor.plugin = plugin;
+    }
     public static void sync(Runnable runnable){
         new BukkitRunnable() {
             @Override
             public void run() {
                 runnable.run();
             }
-        }.runTask(CrossEssentials.getInstance());
+        }.runTask(plugin);
     }
 
     public static void sync(Runnable runnable, long delay){
@@ -20,7 +26,7 @@ public class BukkitExecutor {
             public void run() {
                 runnable.run();
             }
-        }.runTaskLater(CrossEssentials.getInstance(), delay);
+        }.runTaskLater(plugin, delay);
     }
 
     public static void async(Runnable runnable){
@@ -29,7 +35,7 @@ public class BukkitExecutor {
             public void run() {
                 runnable.run();
             }
-        }.runTaskAsynchronously(CrossEssentials.getInstance());
+        }.runTaskAsynchronously(plugin);
     }
 
     public static void async(Runnable runnable, long delay){
@@ -38,6 +44,6 @@ public class BukkitExecutor {
             public void run() {
                 runnable.run();
             }
-        }.runTaskLaterAsynchronously(CrossEssentials.getInstance(), delay);
+        }.runTaskLaterAsynchronously(plugin, delay);
     }
 }

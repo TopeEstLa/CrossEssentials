@@ -8,13 +8,20 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class LoginListener implements Listener {
 
+    private final CrossEssentials plugin;
+
+    public LoginListener(CrossEssentials plugin) {
+
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void event(AsyncPlayerPreLoginEvent e){
-        CrossEssentials.getInstance().getUserManager().fetchUser(e.getUniqueId());
+        plugin.getUserManager().fetchUser(e.getUniqueId());
     }
 
     @EventHandler
     public void event(PlayerQuitEvent e){
-        CrossEssentials.getInstance().getUserManager().removeUser(e.getPlayer().getUniqueId());
+        plugin.getUserManager().removeUser(e.getPlayer().getUniqueId());
     }
 }

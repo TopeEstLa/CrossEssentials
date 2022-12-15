@@ -9,25 +9,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CrossEssentials extends JavaPlugin {
 
-    static CrossEssentials INSTANCE;
     UserManager userManager;
-
-    public static CrossEssentials getInstance() {
-        return INSTANCE;
-    }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        INSTANCE = this;
-        userManager = new UserManager();
+        userManager = new UserManager(this);
 
         // data
-        WebHelper.init();
-        BrokerHelper.init();
+        WebHelper.init(this);
+        BrokerHelper.init(this);
 
         // listeners & commands
-        Bukkit.getPluginManager().registerEvents(new LoginListener(), this);
+        Bukkit.getPluginManager().registerEvents(new LoginListener(this), this);
     }
 
     @Override

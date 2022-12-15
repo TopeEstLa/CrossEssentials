@@ -16,9 +16,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class WebHelper {
 
     static WebAPI api = new RestAPI();
+    private static CrossEssentials plugin;
 
 
-    public static boolean init() {
+    public static boolean init(CrossEssentials crossEssentials) {
+        WebHelper.plugin = crossEssentials;
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         api.makeRequest("","GET",null, webResponse -> {
             if(webResponse.isError() || webResponse.isTimeout()){
@@ -45,7 +47,7 @@ public class WebHelper {
             try{
                 user = gson.fromJson(message.get(), User.class);
             }catch (Exception e){
-                CrossEssentials.getInstance().getLogger().severe("Could not deserialize user from json\n"+message.get());
+                plugin.getLogger().severe("Could not deserialize user from json\n"+message.get());
                 return;
             }
             response.set(Optional.ofNullable(user));

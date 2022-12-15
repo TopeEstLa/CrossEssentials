@@ -1,5 +1,6 @@
 package fr.crossessentials.crossessentials.users;
 
+import fr.crossessentials.crossessentials.CrossEssentials;
 import fr.crossessentials.crossessentials.utils.BukkitExecutor;
 import fr.crossessentials.crossessentials.data.web.WebHelper;
 
@@ -11,10 +12,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class UserManager {
     Map<UUID, User> loadedUsers = new HashMap<>();
+    private final CrossEssentials plugin;
 
-    public UserManager() {
+    public UserManager(CrossEssentials crossEssentials) {
         // init
 
+        this.plugin = crossEssentials;
     }
 
 

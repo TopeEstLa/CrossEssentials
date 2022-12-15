@@ -8,8 +8,10 @@ import fr.crossessentials.crossessentials.exceptions.ConnectionException;
 public class BrokerHelper {
 
     static MessageBroker broker;
+    private static CrossEssentials plugin;
 
-    public static boolean init(){
+    public static boolean init(CrossEssentials crossEssentials){
+        plugin = crossEssentials;
         // TODO: config
         broker = new RedisBroker();
 
@@ -17,7 +19,7 @@ public class BrokerHelper {
             broker.connect(new RedisCredentials("localhost",3306,"root","root"));
             return true;
         } catch (ConnectionException e) {
-            CrossEssentials.getInstance().getLogger().severe("Error while connecting to the message broker: \n"+e);
+            plugin.getLogger().severe("Error while connecting to the message broker: \n"+e);
             return false;
         }
     }
