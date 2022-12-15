@@ -97,4 +97,8 @@ public class JsonObject {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.convertValue(this.map, String.class);
     }
+
+    public Map<String, Object> toMap() {
+        return this.map;
+    }
 }

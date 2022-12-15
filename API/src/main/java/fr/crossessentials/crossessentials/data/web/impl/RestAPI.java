@@ -2,7 +2,7 @@ package fr.crossessentials.crossessentials.data.web.impl;
 
 import fr.crossessentials.crossessentials.data.web.WebAPI;
 import fr.crossessentials.crossessentials.data.web.WebResponse;
-import org.jetbrains.annotations.Nullable;
+import fr.crossessentials.crossessentials.json.JsonObject;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public class RestAPI implements WebAPI {
 
     @Override
-    public void makeRequest(String endpoint, String method, @Nullable JsonObject body, Consumer<WebResponse> response) {
+    public void makeRequest(String endpoint, String method, JsonObject body, Consumer<WebResponse> response) {
         try {
             // TODO add config settings
             URL url = new URL("localhost" + endpoint);
@@ -28,7 +28,7 @@ public class RestAPI implements WebAPI {
                 connection.setDoOutput(true);
 
                 try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()))) {
-                    writer.write(body.getAsString());
+                    writer.write(body.toString());
                 }
             }
 
@@ -41,9 +41,8 @@ public class RestAPI implements WebAPI {
             }
 
             try {
-                JsonObject jsonElement = JsonParser.parseString(connection.getResponseMessage()).getAsJsonObject();
 
-                response.accept(new WebResponse(connection.getResponseCode(),Optional.ofNullable(jsonElement)));
+                response.accept(new WebResponse(connection.getResponseCode(),connection.getResponseMessage()));
             } catch (Exception e) {
                 response.accept(new WebResponse(connection.getResponseCode(), Optional.empty()));
             }
