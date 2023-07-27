@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'io.rivrs'
+group 'io.squid'
 version 'PREBUILD-0.0.0'
 
 allprojects {
