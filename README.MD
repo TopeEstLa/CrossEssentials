@@ -1,4 +1,4 @@
-# CrossEssentials Plugin
+# CrossEssentials Plugin using ![alt text](https://www.ej-technologies.com/images/product_banners/jprofiler_large.png)
 
 CrossEssentials is a powerful plugin designed to enhance the functionality of Essentials for Minecraft servers, while also providing support for multiple servers and proxy environments. It offers essential features for managing and moderating your Minecraft network, making it a must-have for any server owner or administrator.
 
